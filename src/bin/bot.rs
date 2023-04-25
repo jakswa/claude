@@ -1,4 +1,5 @@
 use serenity::prelude::*;
+use serenity::framework::StandardFramework;
 
 #[tokio::main]
 async fn main() {
@@ -9,6 +10,12 @@ async fn main() {
         | GatewayIntents::DIRECT_MESSAGES
         | GatewayIntents::MESSAGE_CONTENT;
 
+    let framework = StandardFramework::new().configure(|c| {
+        c.dynamic_prefix(|_, msg| {
+            Box::pin(async move { Some(msg.author.mention().to_string()) })
+        })
+    });
+
     let policies = std::fs::read_to_string("policies.toml").expect("policies.toml should exist");
     let table = policies.parse::<toml::Table>().unwrap();
     let handler = claude::GreasyHandler::from_table(table);
@@ -17,6 +24,7 @@ async fn main() {
     // by Discord for bot users.
     let mut client = Client::builder(&token, intents)
         .event_handler(handler)
+        .framework(framework)
         .await
         .expect("Err creating client");
 
