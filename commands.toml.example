@@ -1,0 +1,19 @@
+[[commands]]
+matches = ["are you there"]
+[[commands.responses]]
+is_reply = true
+text = "yup <author>, I'm here!"
+
+[[commands]]
+matches = ["say hi", "say hi to <target>"]
+defaults = { target = "<author>" }
+[[commands.responses]]
+text = "hi <target>"
+
+[[commands]]
+matches = ["give me a cactus fact"]
+[[commands.responses]]
+text = "Did you know..."
+[[commands.responses]]
+delay = { secs = 5, nanos = 0 }
+choices = ["cactus are pokey", "cacti or cactus?", "cactus are us"]

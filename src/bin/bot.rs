@@ -1,5 +1,4 @@
 use serenity::prelude::*;
-use serenity::framework::StandardFramework;
 
 #[tokio::main]
 async fn main() {
@@ -10,21 +9,13 @@ async fn main() {
         | GatewayIntents::DIRECT_MESSAGES
         | GatewayIntents::MESSAGE_CONTENT;
 
-    let framework = StandardFramework::new().configure(|c| {
-        c.dynamic_prefix(|_, msg| {
-            Box::pin(async move { Some(msg.author.mention().to_string()) })
-        })
-    });
-
-    let policies = std::fs::read_to_string("policies.toml").expect("policies.toml should exist");
-    let table = policies.parse::<toml::Table>().unwrap();
-    let handler = claude::GreasyHandler::from_table(table);
+    let prompts = std::fs::read_to_string("commands.toml").expect("commands.toml should exist");
+    let handler: claude::commands::Handler = toml::from_str(&prompts).expect("failed to parse");
     // Create a new instance of the Client, logging in as a bot. This will
     // automatically prepend your bot token with "Bot ", which is a requirement
     // by Discord for bot users.
     let mut client = Client::builder(&token, intents)
         .event_handler(handler)
-        .framework(framework)
         .await
         .expect("Err creating client");
 
