@@ -10,7 +10,7 @@ async fn main() {
         | GatewayIntents::MESSAGE_CONTENT;
 
     let prompts = std::fs::read_to_string("commands.toml").expect("commands.toml should exist");
-    let handler: claude::commands::Handler = toml::from_str(&prompts).expect("failed to parse");
+    let handler = claude::commands::Handler::from_str(&prompts);
     // Create a new instance of the Client, logging in as a bot. This will
     // automatically prepend your bot token with "Bot ", which is a requirement
     // by Discord for bot users.

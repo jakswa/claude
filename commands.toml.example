@@ -1,17 +1,18 @@
 [[commands]]
-matches = ["are you there"]
+matches = ['are you there']
 [[commands.responses]]
 is_reply = true
 text = "yup <author>, I'm here!"
 
 [[commands]]
-matches = ["say hi", "say hi to <target>"]
+# matches specially need '<<' and '>>', if you don't know the regex syntax
+matches = ['say hi', 'say hi to <<target>>']
 defaults = { target = "<author>" }
 [[commands.responses]]
 text = "hi <target>"
 
 [[commands]]
-matches = ["give me a cactus fact"]
+matches = ['give me a cactus fact']
 [[commands.responses]]
 text = "Did you know..."
 [[commands.responses]]

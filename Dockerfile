@@ -18,7 +18,7 @@ WORKDIR /app
 
 # Get compiled binaries from builder's cargo install directory
 COPY --from=builder /usr/src/app/bot /app/bot
-COPY --from=builder /usr/src/app/policies.toml /app/policies.toml
+COPY --from=builder /usr/src/app/commands.toml /app/commands.toml
 
 # Run the app
 CMD ./bot

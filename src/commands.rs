@@ -31,6 +31,23 @@ pub struct Handler {
 
 impl Handler {
 
+    pub fn from_str(str: &str) -> Self {
+        let mut str_copy = str.to_string();
+        let match_vars = Regex::new(r"<<(?P<var>\w+)>>").unwrap();
+
+        // replacing special <<var>>s that are only used in match strings.
+        // this lets users not need to know the regex syntax to capture the var.
+        match_vars.captures_iter(&str).for_each(|var_capture| {
+            let var_name = var_capture.name("var").unwrap().as_str();
+            str_copy = str_copy.replace(
+                &format!("<<{}>>", var_name),
+                &format!(r"(?P<{}><@\w+>)", var_name)
+            );
+        });
+
+        toml::from_str(&str_copy).expect("failed to parse")
+    }
+
     fn sub_variables(cmd: &Command, txt: &str, msg: &Message) -> String {
         let mut response_text = txt.to_string();
 
