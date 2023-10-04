@@ -8,7 +8,7 @@ RUN --mount=type=cache,target=/usr/local/cargo,from=rust:latest,source=/usr/loca
     cargo build --release --bin bot && mv ./target/release/bot ./bot
 
 # Runtime image
-FROM debian:bullseye-slim
+FROM debian:12-slim
 
 # Run as "app" user
 RUN useradd -ms /bin/bash app
