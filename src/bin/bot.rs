@@ -8,6 +8,7 @@ async fn main() {
     let intents = GatewayIntents::GUILD_MESSAGES
         | GatewayIntents::DIRECT_MESSAGES
         | GatewayIntents::MESSAGE_CONTENT;
+    println!(":: intents value: {:?}", intents);
 
     let prompts = std::fs::read_to_string("commands.toml").expect("commands.toml should exist");
     let handler = claude::commands::Handler::from_str(&prompts);
