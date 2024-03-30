@@ -42,7 +42,7 @@ async fn anthropic_prompt(prompt: &str) -> String {
     };
     let body = json::object! {
         model: CLAUDE_MODEL,
-        max_tokens: 60,
+        max_tokens: 4096,
         system: "Try to keep responses about the size of a tweet on twitter, 140 characters.",
         messages: [prompt_message]
     };
