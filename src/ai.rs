@@ -5,7 +5,8 @@ use serenity::prelude::*;
 
 use serde::{Deserialize, Serialize};
 
-const CLAUDE_MODEL: &'static str = "claude-3-haiku-20240307";
+// const CLAUDE_HAIKU: &'static str = "claude-3-haiku-20240307";
+const CLAUDE_OPUS: &'static str = "claude-3-opus-20240229";
 
 pub struct Handler {}
 
@@ -20,11 +21,16 @@ impl EventHandler for Handler {
         let prompt = ask_ai
             .captures_iter(&msg.content)
             .find(|capture| capture.name("prompt").is_some());
-        if let None = prompt {
+        if prompt.is_none() {
             return;
         }
-        let response = anthropic_prompt(prompt.unwrap().name("prompt").unwrap().as_str());
-        msg.reply(&ctx.http, response.await)
+
+        let response = anthropic_prompt(
+            CLAUDE_OPUS,
+            prompt.as_ref().unwrap().name("prompt").unwrap().as_str(),
+        )
+        .await;
+        msg.reply(&ctx.http, response)
             .await
             .expect("hope this works");
     }
@@ -33,7 +39,7 @@ impl EventHandler for Handler {
     }
 }
 
-async fn anthropic_prompt(prompt: &str) -> String {
+async fn anthropic_prompt(model: &str, prompt: &str) -> String {
     let client = reqwest::Client::new();
     let api_key = std::env::var("CLAUDE_KEY").expect("set CLAUDE_KEY you dolt");
     let prompt_message = json::object! {
@@ -41,7 +47,7 @@ async fn anthropic_prompt(prompt: &str) -> String {
         content: prompt
     };
     let body = json::object! {
-        model: CLAUDE_MODEL,
+        model: model,
         max_tokens: 4096,
         system: "Try to keep responses about the size of a tweet on twitter, 140 characters.",
         messages: [prompt_message]
